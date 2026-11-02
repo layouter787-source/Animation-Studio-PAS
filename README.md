@@ -1,34 +1,39 @@
 # Animation Studio PAS
 
-Native Android animation-editor prototype built with C++20, Android NDK, CMake and OpenGL ES 3.
+Editor de animação 2D para Android, independente, com motor nativo C++20, Android NDK, CMake e OpenGL ES 3.
 
-## Current status
+## Estado real — versão 0.2.0
 
-This repository is an early engineering scaffold, not a complete animation editor and not a release-ready APK. The current prototype establishes the native Android entry point and starter data models for strokes, keyframes, timeline clips and performance recording.
+Esta entrega adiciona uma primeira tela nativa interativa:
+- canvas OpenGL ES 3;
+- desenho por toque;
+- leitura de pressão e inclinação disponibilizadas pelo dispositivo;
+- desfazer/refazer por botões no topo;
+- alternância simples de borracha;
+- duas cores rápidas.
 
-## Build
+**Limitações conhecidas desta versão:** o renderizador atual usa pontos GPU para representar os traços, a borracha é uma aproximação visual e ainda não é uma borracha por composição alfa correta; não há persistência de projeto, camadas, pincéis avançados, interface de timeline, animação por frames, áudio/vídeo, Performing completo ou exportação. O suporte de pressão/inclinação depende do hardware e do digitalizador. O projeto ainda precisa ser compilado e testado em dispositivos Android reais.
 
-Open the project in Android Studio with Android SDK 35 and a compatible Android NDK installed. Gradle will configure the native CMake build. Supported ABIs are arm64-v8a, armeabi-v7a and x86_64.
+## Compilar
 
-## Planned milestones
+1. Abrir a pasta no Android Studio.
+2. Instalar Android SDK 35, Android NDK e CMake 3.22.1.
+3. Sincronizar Gradle e compilar o módulo `app`.
+4. Testar primeiro num dispositivo arm64 com Android 8.0 ou superior.
 
-1. Functional canvas: touch/stylus input, pressure/tilt, GPU stroke rendering, eraser, undo/redo.
-2. Drawing tools: layers, brush engine, color, selection and project persistence.
-3. Animation: frame-by-frame, onion skin, keyframes, interpolation and playback.
-4. Performing: record live transforms and edit recorded passes on a timeline.
-5. Media and export: image/audio/video import and rendered video export using Android codecs.
-6. Testing, performance profiling and signed release builds.
+## Estrutura
 
-## Architecture
+- `app/src/main/cpp/main.cpp`: NativeActivity, ciclo EGL, entrada e renderização.
+- `app/src/main/cpp/CMakeLists.txt`: build nativo.
+- Gradle/Manifest: empacotamento Android.
 
-- `app/src/main/cpp`: C++20 native application and engine.
-- `engine/drawing`: stroke data model.
-- `engine/animation`: keyframe and interpolation model.
-- `engine/timeline`: tracks and clips model.
-- `engine/perform`: live-performance recording model.
+## Roteiro técnico
 
-## Important limitations
+1. Motor de pincéis com malhas trianguladas, interpolação de pressão e borracha alfa.
+2. Camadas, seleção, undo/redo transacional e gravação de projetos.
+3. Timeline, flipbook, onion skin, keyframes, interpolação e playback.
+4. Performing com captura de gestos e edição de passes.
+5. Importação e exportação de imagem, áudio e vídeo via APIs Android.
+6. Testes automatizados, perfil de GPU/memória, otimização e APK assinado.
 
-The current source is a foundation only. Several models are not yet connected to a renderer or interactive editing UI. Stylus support, full brush rendering, complete timeline editing, audio/video workflows, project serialization and APK validation remain to be implemented. No claim of Procreate Dreams feature parity is made.
-
-This is an independent project and does not include proprietary Procreate code, assets or branding.
+Não é uma cópia do código, dos recursos ou da marca Procreate. A compatibilidade será construída por implementação independente.
