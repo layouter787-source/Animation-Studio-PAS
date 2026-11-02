@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "PAS", __VA_ARGS__)
@@ -29,8 +30,8 @@ bool initEgl(App& a){
  a.surface=eglCreateWindowSurface(a.display,c,a.state->window,nullptr);
  if(a.context==EGL_NO_CONTEXT||a.surface==EGL_NO_SURFACE||!eglMakeCurrent(a.display,a.surface,a.surface,a.context))return false;
  eglQuerySurface(a.display,a.surface,EGL_WIDTH,&a.width); eglQuerySurface(a.display,a.surface,EGL_HEIGHT,&a.height);
- const char* vs="#version 300 es\nlayout(location=0) in vec2 p; layout(location=1) in vec4 c; out vec4 col; void main(){gl_Position=vec4(p,0,1);gl_PointSize=clamp(c.a*18.0,2.0,40.0);col=vec4(c.rgb,1.0);}";
- const char* fs="#version 300 es\nprecision mediump float; in vec4 col; out vec4 frag; void main(){frag=col;}";
+ const char* vs="#version 300 es\nlayout(location=0) in vec2 p; layout(location=1) in vec4 c; out vec4 col; void main(){gl_Position=vec4(p,0,1);gl_PointSize=clamp(c.a*2.0,1.0,96.0);col=vec4(c.rgb,1.0);}";
+ const char* fs="#version 300 es\nprecision mediump float; in vec4 col; out vec4 frag; void main(){float d=length(gl_PointCoord-vec2(0.5));float aa=max(fwidth(d),0.003);float alpha=1.0-smoothstep(0.5-aa,0.5,d);if(alpha<0.01)discard;frag=vec4(col.rgb,alpha);}";
  GLuint v=shader(GL_VERTEX_SHADER,vs),f=shader(GL_FRAGMENT_SHADER,fs); a.program=glCreateProgram();glAttachShader(a.program,v);glAttachShader(a.program,f);glLinkProgram(a.program);glDeleteShader(v);glDeleteShader(f);
  glGenVertexArrays(1,&a.vao);glBindVertexArray(a.vao);glGenBuffers(1,&a.vbo);glBindBuffer(GL_ARRAY_BUFFER,a.vbo);
  glEnableVertexAttribArray(0);glVertexAttribPointer(0,2,GL_FLOAT,GL_FALSE,sizeof(Vertex),(void*)0);
