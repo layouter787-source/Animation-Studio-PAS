@@ -3,6 +3,7 @@ plugins { id("com.android.application") }
 android {
     namespace = "com.pas.animationstudio"
     compileSdk = 35
+    ndkVersion = "27.2.12479018"
     defaultConfig {
         applicationId = "com.pas.animationstudio"
         minSdk = 26
