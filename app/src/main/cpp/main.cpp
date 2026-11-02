@@ -70,9 +70,9 @@ int32_t input(android_app* app,AInputEvent* e){
  if(action==AMOTION_EVENT_ACTION_DOWN){
    if(y<68){if(x<66)undo(a);else if(x<124)redo(a);else if(x<182){a.eraser=!a.eraser;}else if(x<240){a.color[0]=0.08f;a.color[1]=0.55f;a.color[2]=1.f;a.eraser=false;}else{a.color[0]=0.95f;a.color[1]=0.35f;a.color[2]=0.22f;a.eraser=false;}return 1;}
    a.drawing=true;a.active=Stroke{};a.active.r=a.color[0];a.active.g=a.color[1];a.active.b=a.color[2];a.active.size=a.brush;a.active.erase=a.eraser;
-   float pr=AMotionEvent_getPressure(e,ix);if(pr<=0)pr=0.5f;pushPoint(a,x,y,pr,AMotionEvent_getAxisValue(e,ix,AMOTION_EVENT_AXIS_TILT));a.dirty=true;return 1;
+   float pr=AMotionEvent_getPressure(e,ix);if(pr<=0)pr=0.5f;pushPoint(a,x,y,pr,AMotionEvent_getAxisValue(e,AMOTION_EVENT_AXIS_TILT,ix));a.dirty=true;return 1;
  }
- if(action==AMOTION_EVENT_ACTION_MOVE&&a.drawing){size_t count=AMotionEvent_getPointerCount(e);for(size_t i=0;i<count;++i){float pr=AMotionEvent_getPressure(e,i);if(pr<=0)pr=0.5f;pushPoint(a,AMotionEvent_getX(e,i),AMotionEvent_getY(e,i),pr,AMotionEvent_getAxisValue(e,i,AMOTION_EVENT_AXIS_TILT));}a.dirty=true;return 1;}
+ if(action==AMOTION_EVENT_ACTION_MOVE&&a.drawing){size_t count=AMotionEvent_getPointerCount(e);for(size_t i=0;i<count;++i){float pr=AMotionEvent_getPressure(e,i);if(pr<=0)pr=0.5f;pushPoint(a,AMotionEvent_getX(e,i),AMotionEvent_getY(e,i),pr,AMotionEvent_getAxisValue(e,AMOTION_EVENT_AXIS_TILT,i));}a.dirty=true;return 1;}
  if(action==AMOTION_EVENT_ACTION_UP||action==AMOTION_EVENT_ACTION_CANCEL){finish(a);return 1;}return 0;
 }
 void command(android_app* app,int32_t cmd){App& a=*static_cast<App*>(app->userData);if(cmd==APP_CMD_INIT_WINDOW&&app->window){if(initEgl(a))a.dirty=true;}else if(cmd==APP_CMD_TERM_WINDOW)shutdown(a);}
